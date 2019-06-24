@@ -1,2 +1,6 @@
 ﻿  main.cpp
+D:\Projetos\Resistor-Game\CG\SelectionBlock.cpp(54,1): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
+D:\Projetos\Resistor-Game\CG\SelectionBlock.cpp(79,1): warning C4305:  'argument': truncation from 'double' to 'GLfloat'
+D:\Projetos\Resistor-Game\CG\main.cpp(58,68): warning C4305:  'argument': truncation from 'double' to 'float'
+D:\Projetos\Resistor-Game\CG\main.cpp(61,65): warning C4305:  'argument': truncation from 'double' to 'float'
   CG.vcxproj -> D:\Projetos\Resistor-Game\Debug\CG.exe

@@ -1,14 +1,5 @@
 
-#if _MSC_VER
-#include <Windows.h>
-#define _USE_MATH_DEFINES
-#endif
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include "GL/gl.h" 
-#include "GL/glu.h" 
-#include "GL/glut.h"
+#include "BaseIncludes.h"
 #include "SelectionBlock.cpp"
 
 #define WINDOWWIDTH 640
@@ -20,7 +11,7 @@ void KeyboardInput(unsigned char, int, int);
 void MouseInput(int button, int x, int y, int unknown);
 void Startup(void);
 
-CustomPrimitives::Rectangle* rectangles[50];
+SelectionBlock* blocks[50];
 
 int main(int argc, char** argv)
 {
@@ -49,13 +40,27 @@ void Startup(void)
 #endif
 	printf("Press Q to quit...");
 
-	const int size = 50;
-	const int padding = 5;
+	const int size = 100;
+	const int padding = 15;
+	const int insideBlockPadding = 5;
 	const int blocksQuantity = 5;
 	int initialPosition = (WINDOWWIDTH - (blocksQuantity * size + (blocksQuantity - 1) * padding)) / 2;
 	for (int i = 0; i < blocksQuantity; i++)
 	{
-		rectangles[i] = new CustomPrimitives::Rectangle(initialPosition + i * (size + padding), 25, size, size);
+		auto selectionPosition = new CustomPrimitives::Rectangle(initialPosition + i * (size + padding), 25, size, size);
+		auto resistorPosition = new CustomPrimitives::Rectangle(
+			selectionPosition->x + insideBlockPadding,
+			selectionPosition->y + selectionPosition->height / 4,	///Para começar 1/4 acima e terminar em 3/4
+			selectionPosition->width - insideBlockPadding,
+			selectionPosition->height / 2);
+
+		CustomPrimitives::Color* resistorColors[4];
+		resistorColors[0] = new CustomPrimitives::Color(0.6f, 0.46, 0.32);
+		resistorColors[1] = new CustomPrimitives::Color(0, 0, 0);
+		resistorColors[2] = new CustomPrimitives::Color(1, 0, 0);
+		resistorColors[3] = new CustomPrimitives::Color(0.8, 0.6, 0.2);
+		auto resistor = new Resistor(resistorPosition, resistorColors, 4);
+		blocks[i] = new SelectionBlock(selectionPosition, resistor);
 	}
 }
 
@@ -63,39 +68,15 @@ void Startup(void)
 void DrawLoop()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glColor3f(0, 0, 1);
+
 	for (int i = 0; i < 5; i++)
 	{
-		glBegin(GL_QUADS);
-		auto rectangle = rectangles[i];
-		printf("i: %d\n", i);
-		printf("x: %d\n", rectangle->x);
-		printf("y: %d\n", rectangle->y);
-		printf("width: %d\n", rectangle->width);
-		printf("height: %d\n", rectangle->height);
-		printf("\n\n\n");
-		glVertex2i(rectangle->x, rectangle->y);
-		glVertex2i(rectangle->x + rectangle->width, rectangle->y);
-		glVertex2i(rectangle->x + rectangle->width, rectangle->y + rectangle->height);
-		glVertex2i(rectangle->x, rectangle->y + rectangle->height);
-		glEnd();
+		if (blocks[i] == nullptr)
+			break;
+		auto block = blocks[i];
+		block->Draw();
 	}
 	glFlush();
-
-	/*glBegin(GL_QUADS);
-	glVertex2i(0, 0);
-	glVertex2i(10, 0);
-	glVertex2i(10, 50);
-	glVertex2i(0, 50);
-	glEnd();
-	glBegin(GL_QUADS);
-	glVertex2i(15, 0);
-	glVertex2i(25, 0);
-	glVertex2i(25, 50);
-	glVertex2i(15, 50);
-	glEnd();
-	glFlush();*/
-
 }
 
 void ResizeWindow(GLsizei w, GLsizei h)

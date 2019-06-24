@@ -23,6 +23,7 @@
     <ClCompile Include="SelectionBlock.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseIncludes.h" />
     <ClInclude Include="SelectionBlock.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

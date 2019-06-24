@@ -26,5 +26,8 @@
     <ClInclude Include="SelectionBlock.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="BaseIncludes.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
