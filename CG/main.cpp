@@ -9,18 +9,18 @@
 #include "GL/gl.h" 
 #include "GL/glu.h" 
 #include "GL/glut.h"
+#include "SelectionBlock.cpp"
 
-#define WINDOWWIDTH 500
-#define WINDOWHEIGHT 500
-#define WINDOWSIZE 500
-#define TAMQUADRADO 50
-#define POSINICIAL 20
+#define WINDOWWIDTH 640
+#define WINDOWHEIGHT 480
 
 void DrawLoop();
 void ResizeWindow(GLsizei, GLsizei);
 void KeyboardInput(unsigned char, int, int);
 void MouseInput(int button, int x, int y, int unknown);
-void Inicializa(void);
+void Startup(void);
+
+CustomPrimitives::Rectangle* rectangles[50];
 
 int main(int argc, char** argv)
 {
@@ -34,13 +34,13 @@ int main(int argc, char** argv)
 	glutReshapeFunc(ResizeWindow);
 	glutKeyboardFunc(KeyboardInput);
 	glutMouseFunc(MouseInput);
-	Inicializa();
+	Startup();
 	glutMainLoop();
 
 	return 0;
 }
 
-void Inicializa(void)
+void Startup(void)
 {
 
 	glClearColor(1, 1, 1, 0);
@@ -49,6 +49,14 @@ void Inicializa(void)
 #endif
 	printf("Press Q to quit...");
 
+	const int size = 50;
+	const int padding = 5;
+	const int blocksQuantity = 5;
+	int initialPosition = (WINDOWWIDTH - (blocksQuantity * size + (blocksQuantity - 1) * padding)) / 2;
+	for (int i = 0; i < blocksQuantity; i++)
+	{
+		rectangles[i] = new CustomPrimitives::Rectangle(initialPosition + i * (size + padding), 25, size, size);
+	}
 }
 
 
@@ -56,15 +64,38 @@ void DrawLoop()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glColor3f(0, 0, 1);
-	glBegin(GL_QUADS);
+	for (int i = 0; i < 5; i++)
 	{
-		glVertex2i(0, 0);
-		glVertex2i(50, 0);
-		glVertex2i(50, 50);
-		glVertex2i(0, 50);
+		glBegin(GL_QUADS);
+		auto rectangle = rectangles[i];
+		printf("i: %d\n", i);
+		printf("x: %d\n", rectangle->x);
+		printf("y: %d\n", rectangle->y);
+		printf("width: %d\n", rectangle->width);
+		printf("height: %d\n", rectangle->height);
+		printf("\n\n\n");
+		glVertex2i(rectangle->x, rectangle->y);
+		glVertex2i(rectangle->x + rectangle->width, rectangle->y);
+		glVertex2i(rectangle->x + rectangle->width, rectangle->y + rectangle->height);
+		glVertex2i(rectangle->x, rectangle->y + rectangle->height);
+		glEnd();
 	}
-	glEnd();
 	glFlush();
+
+	/*glBegin(GL_QUADS);
+	glVertex2i(0, 0);
+	glVertex2i(10, 0);
+	glVertex2i(10, 50);
+	glVertex2i(0, 50);
+	glEnd();
+	glBegin(GL_QUADS);
+	glVertex2i(15, 0);
+	glVertex2i(25, 0);
+	glVertex2i(25, 50);
+	glVertex2i(15, 50);
+	glEnd();
+	glFlush();*/
+
 }
 
 void ResizeWindow(GLsizei w, GLsizei h)
