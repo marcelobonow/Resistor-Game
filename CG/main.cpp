@@ -16,8 +16,6 @@
 #define TAMQUADRADO 50
 #define POSINICIAL 20
 
-int tx = 0, ty = 0, inc = 3;
-
 void DrawLoop();
 void ResizeWindow(GLsizei, GLsizei);
 void KeyboardInput(unsigned char, int, int);
