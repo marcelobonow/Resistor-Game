@@ -51,7 +51,7 @@ void Startup(void)
 		auto resistorPosition = new CustomPrimitives::Rectangle(
 			selectionPosition->x + insideBlockPadding,
 			selectionPosition->y + selectionPosition->height / 4,	///Para começar 1/4 acima e terminar em 3/4
-			selectionPosition->width - insideBlockPadding,
+			selectionPosition->width - 2 * insideBlockPadding,
 			selectionPosition->height / 2);
 
 		CustomPrimitives::Color* resistorColors[4];
