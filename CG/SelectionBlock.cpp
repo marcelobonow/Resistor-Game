@@ -32,6 +32,10 @@ namespace CustomPrimitives
 			this->g = g;
 			this->b = b;
 		}
+		Color()
+		{
+			r = g = b = 0;
+		}
 	};
 }
 
@@ -39,14 +43,20 @@ class Resistor
 {
 private:
 	CustomPrimitives::Rectangle* base;
-	CustomPrimitives::Color** colors;
+	CustomPrimitives::Color* colors;
 	unsigned int colorsLength;
+	const int colorPadding = 2;
+	const int colorSize = 15;
 public:
-	Resistor(CustomPrimitives::Rectangle* base, CustomPrimitives::Color* colors[], unsigned int colorsLength)
+	Resistor(CustomPrimitives::Rectangle* base, CustomPrimitives::Color* colors, unsigned int colorsLength)
 	{
 		this->base = base;
 		this->colors = colors;
 		this->colorsLength = colorsLength;
+	}
+	Resistor()
+	{
+
 	}
 
 	void Draw()
@@ -58,6 +68,21 @@ public:
 		glVertex2i(base->x + base->width, base->y + base->height);
 		glVertex2i(base->x, base->y + base->height);
 		glEnd();
+
+		for (int i = 0; i < colorsLength; i++)
+		{
+			auto color = colors[i];
+			auto padding = colorPadding;
+			if (i == colorsLength - 1)
+				padding = colorPadding + 5;
+			glColor3f(color.r, color.g, color.b);
+			glBegin(GL_QUADS);
+			glVertex2i(base->x + i * (padding + colorSize), base->y);
+			glVertex2i(base->x + i * (padding + colorSize) + colorSize, base->y);
+			glVertex2i(base->x + i * (padding + colorSize) + colorSize, base->y + base->height);
+			glVertex2i(base->x + i * (padding + colorSize), base->y + base->height);
+			glEnd();
+		}
 	}
 };
 
