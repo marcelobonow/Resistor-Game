@@ -16,6 +16,7 @@ SelectionBlock* blocks[3];
 const int blocksQuantity = 3;
 int correctResistor = 0;
 std::string text;
+int gameState = 0;
 
 void DrawtextCustom(const char* text, int length, int x, int y)
 {
@@ -137,12 +138,12 @@ void SetQuestion()
 	}
 	case 1:
 	{
-		text = "Qual resistor produzira 20mA numa tensao de 66V?";
+		text = "Qual resistor numa tensao de 306V possui uma corrente de 45mA?";
 		break;
 	}
 	case 2:
 	{
-		text = "Qual resistor numa tensao de 306V possui uma corrente de 45mA?";
+		text = "Qual resistor produzira 20mA numa tensao de 66V?";
 		break;
 	}
 	}
@@ -154,8 +155,19 @@ void DrawLoop()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glColor3f(0, 1, 0);
-	DrawtextCustom(text.data(), text.size(), WINDOWWIDTH / 2 - 250, WINDOWHEIGHT / 2 + 120);
+	switch (gameState)
+	{
+	case 0:
+		glColor3f(1, 1, 1);
+		break;
+	case 1:
+		glColor3f(0, 1, 0);
+		break;
+	case 2:
+		glColor3f(1, 0, 0);
+		break;
+	}
+	DrawtextCustom(text.data(), text.size(), WINDOWWIDTH / 2 - text.size() * 5, WINDOWHEIGHT / 2 + 120);
 
 	for (int i = 0; i < blocksQuantity; i++)
 	{
@@ -205,17 +217,30 @@ void MouseInput(int button, int state, int x, int y)
 	}
 	else if (state == GLUT_UP)
 	{
-		for (int i = 0; i < blocksQuantity; i++)
+		if (gameState > 0)
 		{
-			if (blocks[i]->IsInside(x, y))
+			gameState = 0;
+			SetQuestion();
+		}
+		else
+		{
+			for (int i = 0; i < blocksQuantity; i++)
 			{
-				if (i == correctResistor)
+				if (blocks[i]->IsInside(x, y))
 				{
-					printf("Voce acertou!\n");
-				}
-				else
-				{
-					printf("Errou, não era o resistor certo\n");
+					if (i == correctResistor)
+					{
+						text = "Voce acertou!";
+						gameState = 1;
+					}
+					else
+					{
+						text = "Errou, nao era o resistor certo!";
+						gameState = 2;
+					}
+
+					DrawLoop();
+					break;
 				}
 			}
 		}
